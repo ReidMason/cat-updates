@@ -183,6 +183,10 @@ def run_cat_check():
                 json.dump(new_cat_data, f)
         else:
             print("No new updates")
+            
+    else:
+        with open('data/old_cat_data.json', 'w') as f:
+            json.dump(new_cat_data, f)
     print("Check complete")
 
 
