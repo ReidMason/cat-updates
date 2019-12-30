@@ -16,6 +16,12 @@ PASSWORD = os.environ.get('PASSWORD')
 RECIPIENT = os.environ.get('RECIPIENT')
 
 
+def log(text: str) -> None:
+    """ Logs text with a specified style using colorama styles """
+    timestamp = datetime.today().strftime('%d-%m-%Y %H:%M:%S')
+    log(f"{timestamp} {text}")
+
+
 def map_living_with_cats(living_with_cats):
     mapping = {''                      : 'Unknown',
                'B - Not To Live With'  : 'I prefer not to live with other cats',
@@ -160,7 +166,7 @@ def check_for_removed_cats(new_cat_data, old_cat_data):
 
 
 def run_cat_check():
-    print("Running cat check")
+    log("Running cat check")
     r = requests.get('https://www.battersea.org.uk/api/animals/cats')
     new_cat_data = json.loads(r.content).get('animals')
 
@@ -177,17 +183,17 @@ def run_cat_check():
         removed_cats = check_for_removed_cats(new_cat_data, old_cat_data)
 
         if not len(new_cats) == 0:
-            print("Update detected. Sending email")
+            log("Update detected. Sending email")
             send_email(new_cats, reserved_cats, unreserved_cats, rehomed_cats, removed_cats)
             with open('data/old_cat_data.json', 'w') as f:
                 json.dump(new_cat_data, f)
         else:
-            print("No new updates")
-            
+            log("No new updates")
+
     else:
         with open('data/old_cat_data.json', 'w') as f:
             json.dump(new_cat_data, f)
-    print("Check complete")
+    log("Check complete")
 
 
 if __name__ == '__main__':
