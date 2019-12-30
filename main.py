@@ -19,7 +19,7 @@ RECIPIENT = os.environ.get('RECIPIENT')
 def log(text: str) -> None:
     """ Logs text with a specified style using colorama styles """
     timestamp = datetime.today().strftime('%d-%m-%Y %H:%M:%S')
-    log(f"{timestamp} {text}")
+    print(f"{timestamp} {text}")
 
 
 def map_living_with_cats(living_with_cats):
@@ -198,10 +198,7 @@ def run_cat_check():
 
 if __name__ == '__main__':
     schedule.every(20).minutes.do(lambda: run_cat_check())
-    try:
-        run_cat_check()
-    except Exception as e:
-        print(e)
+    run_cat_check()
 
     while True:
         try:
