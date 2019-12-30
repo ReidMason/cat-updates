@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Containers>
+    <Date>2019-12-30</Date>
+    <Beta>False</Beta>
+    <Name>Cat updates</Name>
+    <Overview>
+        Checks for cat rehoming updates.
+    </Overview>
+    <Registry>https://registry.hub.docker.com/u/skippythesnake/cat-updates</Registry>
+    <GitHub>https://github.com/SkippyTheSnake/cat-updates</GitHub>
+    <Repository>skippythesnake/cat-updates</Repository>
+    <Support>https://github.com/SkippyTheSnake/cat-updates</Support>
+    <BindTime>true</BindTime>
+    <Privileged>false</Privileged>
+    <Networking>
+        <Mode>host</Mode>
+        <Publish/>
+    </Networking>
+    <Environment>
+        <Variable>
+            <Name>MY_ADDRESS</Name>
+            <Value>Email</Value>
+        </Variable>
+        <Variable>
+            <Name>PASSWORD</Name>
+            <Value>Password</Value>
+        </Variable>
+        <Variable>
+            <Name>RECIPIENT</Name>
+            <Value>Recipient Email</Value>
+        </Variable>
+    </Environment>
+    <Data>
+        <Volume>
+            <HostDir>/mnt/user/appdata/cat-updates/</HostDir>
+            <ContainerDir>/app/data</ContainerDir>
+            <Mode>rw</Mode>
+        </Volume>
+    </Data>
+</Containers>
