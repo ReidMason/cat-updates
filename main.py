@@ -3,6 +3,7 @@ import time
 from datetime import datetime
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from dateutil.relativedelta import relativedelta
 
 import requests
 import json
@@ -43,11 +44,11 @@ def generate_cats_display_html(data, heading):
             status = cat.get('field_animal_rehomed')
 
         html += f"""<tr style="{'margin-top: 20px;' if i > 0 else ''}">
-                        <a href="https://www.battersea.org.uk{cat.get('path')}">
+                        <a style="float: left;" href="https://www.battersea.org.uk{cat.get('path')}">
                             <img style="padding-right: 30px;" src="{cat.get('field_animal_thumbnail')}" >
                         </a>
-                        <td>
-                        <div style="padding-bottom: 70%;">
+                        
+                        <div style="padding-bottom: 5%; float: right;">
                            
                             <a href="https://www.battersea.org.uk{cat.get('path')}">
                                 <h1 style="margin: 0px; margin-top: 20px;" href="https://www.battersea.org.uk{cat.get('path')}">{cat.get('title')}</h1>
@@ -60,7 +61,7 @@ def generate_cats_display_html(data, heading):
                             <h3 style="margin-bottom: 10px; margin-top: 0px; margin-bottom: 5px;">Location: {cat.get("field_animal_centre").title()}</h3>
                             <h3 style="margin-bottom: 10px; margin-top: 0px; margin-bottom: 5px;">Date added: {cat.get("field_animal_date_published")}</h3>
                         </div>
-                        </td>
+                        
                         </tr>"""
     html += """</table>"""
 
@@ -85,11 +86,11 @@ def send_email(new_cats, reserved_cats, unreserved_cats, rehomed_cats, removed_c
     msg_alternative = MIMEMultipart('alternative')
     msg.attach(msg_alternative)
 
-    html = generate_cats_display_html(new_cats, 'New Cats')
-    html += generate_cats_display_html(reserved_cats, 'Reserved Cats')
-    html += generate_cats_display_html(unreserved_cats, 'Unreserved Cats')
-    html += generate_cats_display_html(rehomed_cats, 'Re-homed Cats')
-    html += generate_cats_display_html(removed_cats, 'Removed Cats')
+    html = generate_cats_display_html(new_cats, f"New Cat{'s' if len(new_cats) > 1 else ''}")
+    html += generate_cats_display_html(reserved_cats, f"Reserved Cat{'s' if len(reserved_cats) > 1 else ''}")
+    html += generate_cats_display_html(unreserved_cats, f"Unreserved Cat {'s' if len(unreserved_cats) > 1 else ''}")
+    html += generate_cats_display_html(rehomed_cats, f"Re-homed Cat{'s' if len(rehomed_cats) > 1 else ''}")
+    html += generate_cats_display_html(removed_cats, f"Removed Cat{'s' if len(removed_cats) > 1 else ''}")
     msg_text = MIMEText(html, 'html')
     msg_alternative.attach(msg_text)
 
@@ -101,13 +102,14 @@ def add_age_to_cat_data(cat_data):
     now = datetime.now()
     for cat in cat_data:
         birth_date = datetime.strptime(cat.get('field_animal_age'), '%Y-%m-%d')
-        years = now.year - birth_date.year
-        years = f'{years} year{"s" if years > 1 else ""} ' if years > 0 else ""
+        diff = relativedelta(now, birth_date)
+        years = diff.years
+        months = diff.months
 
-        months = now.month - birth_date.month
-        months = f'{months} month{"s" if months > 1 else ""}' if months > 0 else ""
+        years = f'{years} year{"s" if years > 1 else ""}' if years > 0 else ""
+        months = f' {months} month{"s" if months > 1 else ""}' if months > 0 else ""
 
-        cat['age'] = f'{years}{months} old'
+        cat['age'] = f'{years} {months} old'.strip()
 
     return cat_data
 
