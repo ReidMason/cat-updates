@@ -16,7 +16,6 @@ MY_ADDRESS = os.environ.get('MY_ADDRESS')
 PASSWORD = os.environ.get('PASSWORD')
 RECIPIENT = os.environ.get('RECIPIENT')
 
-
 def log(text: str) -> None:
     """ Logs text with a specified style using colorama styles """
     timestamp = datetime.today().strftime('%d-%m-%Y %H:%M:%S')
@@ -171,6 +170,8 @@ def run_cat_check():
     log("Running cat check")
     r = requests.get('https://www.battersea.org.uk/api/animals/cats')
     new_cat_data = json.loads(r.content).get('animals')
+
+    new_cat_data = [x for x in new_cat_data.values()]
 
     if os.path.exists('data/old_cat_data.json'):
         with open('data/old_cat_data.json', 'r') as f:
